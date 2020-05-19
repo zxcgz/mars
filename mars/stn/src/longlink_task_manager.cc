@@ -216,7 +216,11 @@ void LongLinkTaskManager::__RedoTasks(const std::string& _name) {
     
     retry_interval_ = 0;
     
-    MessageQueue::CancelMessage(asyncreg_.Get());
+    if (_name.empty()) {
+        MessageQueue::CancelMessage(asyncreg_.Get());
+    } else {
+        MessageQueue::CancelMessage(asyncreg_.Get(), longlink_id_[_name]);
+    }
     __RunLoop();
 }
 
@@ -559,6 +563,7 @@ void LongLinkTaskManager::__BatchErrorRespHandle(const std::string& _name, ErrCm
     xinfo2(TSF"batch error, channel name:%_, src id:%_ callback:%_, errcode:%_, errtype:%_, fail handle:%_", _name, _src_taskid, _callback_runing_task_only, _err_code, _err_type, _fail_handle);
     xassert2(kEctOK != _err_type);
     xassert2(kTaskFailHandleTaskTimeout != _fail_handle);
+    std::string channel_name = _name;
 
     std::list<TaskProfile>::iterator first = lst_cmd_.begin();
     std::list<TaskProfile>::iterator last = lst_cmd_.end();
@@ -577,7 +582,7 @@ void LongLinkTaskManager::__BatchErrorRespHandle(const std::string& _name, ErrCm
             continue;
         }
 
-        if(!_name.empty() && first->task.channel_name != _name) {
+        if(!channel_name.empty() && first->task.channel_name != channel_name) {
             xwarn2(TSF"task channel name:%_", first->task.channel_name);
             first = next;
             continue;
@@ -605,21 +610,21 @@ void LongLinkTaskManager::__BatchErrorRespHandle(const std::string& _name, ErrCm
     }
 
     if (kTaskFailHandleSessionTimeout == _fail_handle || kTaskFailHandleRetryAllTasks == _fail_handle) {
-        __Disconnect(_name, LongLink::kDecodeErr);
-        MessageQueue::CancelMessage(asyncreg_.Get(), longlink_id_[_name]);
+        __Disconnect(channel_name, LongLink::kDecodeErr);
+        MessageQueue::CancelMessage(asyncreg_.Get(), longlink_id_[channel_name]);
         retry_interval_ = 0;
     }
 
     if (kTaskFailHandleDefault == _fail_handle) {
         if (kEctDns != _err_type && kEctSocket != _err_type && kEctCanceld != _err_type) {  // not longlink callback
-            __Disconnect(_name, LongLink::kDecodeErr);
+            __Disconnect(channel_name, LongLink::kDecodeErr);
         }
-        MessageQueue::CancelMessage(asyncreg_.Get(), longlink_id_[_name]);
+        MessageQueue::CancelMessage(asyncreg_.Get(), longlink_id_[channel_name]);
     }
 
     if (kEctNetMsgXP == _err_type) {
-        __Disconnect(_name, LongLink::kTaskTimeout);
-        MessageQueue::CancelMessage(asyncreg_.Get(), longlink_id_[_name]);
+        __Disconnect(channel_name, LongLink::kTaskTimeout);
+        MessageQueue::CancelMessage(asyncreg_.Get(), longlink_id_[channel_name]);
     }
 }
 
