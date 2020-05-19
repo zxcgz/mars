@@ -183,7 +183,7 @@ void LongLinkTaskManager::RedoTasks() {
 }
 
 void LongLinkTaskManager::__RedoTasks(const std::string& _name) {
-    xinfo_function(TSF"channel name:%_", _name);
+    xinfo_function(TSF"redotask channel name:%_", _name);
 
     if (lst_cmd_.empty()) {
         xerror2(TSF"task list is empty!");
@@ -560,7 +560,7 @@ void LongLinkTaskManager::__BatchErrorRespHandleByUserId(const std::string& _use
 }
 
 void LongLinkTaskManager::__BatchErrorRespHandle(const std::string& _name, ErrCmdType _err_type, int _err_code, int _fail_handle, uint32_t _src_taskid, bool _callback_runing_task_only) {
-    xinfo2(TSF"batch error, channel name:%_, src id:%_ callback:%_, errcode:%_, errtype:%_, fail handle:%_", _name, _src_taskid, _callback_runing_task_only, _err_code, _err_type, _fail_handle);
+    xinfo2(TSF"batch error tag, channel name:%_, src id:%_ callback:%_, errcode:%_, errtype:%_, fail handle:%_", _name, _src_taskid, _callback_runing_task_only, _err_code, _err_type, _fail_handle);
     xassert2(kEctOK != _err_type);
     xassert2(kTaskFailHandleTaskTimeout != _fail_handle);
     std::string channel_name = _name;
