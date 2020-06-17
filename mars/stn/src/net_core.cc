@@ -789,6 +789,7 @@ void NetCore::DestroyLongLink(const std::string& _name){
     }
     longlink->Channel()->SignalConnection.disconnect_all_slots();
     longlink->Channel()->broadcast_linkstatus_signal_.disconnect_all_slots();
+    longlink.reset();   // do not hold the shared_ptr
 
     longlink_task_manager_->ReleaseLongLink(_name);
     xinfo2(TSF"destroy long link %_ ", _name);
