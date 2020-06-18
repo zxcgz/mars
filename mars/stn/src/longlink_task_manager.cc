@@ -309,12 +309,12 @@ void LongLinkTaskManager::__RunOnTimeout() {
 	        auto longlink_channel = longlink->Channel();
             xerror2(TSF"task timeout, taskid:%_, nStartSendTime=%_, cur_time=%_, timeout:%_",
                     first->task.taskid, first->transfer_profile.start_send_time / 1000, cur_time / 1000, first->task_timeout / 1000);
+            __SingleRespHandle(first, kEctLocal, kEctLocalTaskTimeout, kTaskFailHandleTaskTimeout, longlink_channel->Profile());
             if(batchMap.find(first->task.channel_name) == batchMap.end()) {
                 socket_timeout_code = kEctLongTaskTimeout;
                 src_taskid = first->task.taskid;
                 batchMap[first->task.channel_name] = std::make_pair(socket_timeout_code, src_taskid);
             }
-            __SingleRespHandle(first, kEctLocal, kEctLocalTaskTimeout, kTaskFailHandleTaskTimeout, longlink_channel->Profile());
         }
 
         first = next;
