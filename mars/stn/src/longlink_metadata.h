@@ -39,6 +39,7 @@ public:
     std::shared_ptr<LongLink> Channel() {
         if(!longlink_) { // do not use (longlink_ == nullptr), or may cause NPE when someone calls this function
             xassert2(false, TSF"null longlink, name:%_", config_.name.c_str());
+            return nullptr;
         }
         return longlink_;
     }

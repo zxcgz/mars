@@ -324,11 +324,11 @@ void LongLinkTaskManager::__RunOnTimeout() {
         if(item.second.first == kEctLongTaskTimeout) {
             __BatchErrorRespHandle(item.first, kEctNetMsgXP, kEctLocalTaskTimeout, kTaskFailHandleDefault, item.second.second);
         } else {
+	        xassert2(fun_notify_network_err_);
+	        auto longlink_channel = GetLongLink(item.first)->Channel();
+	        if(longlink_channel)
+		        fun_notify_network_err_(item.first, __LINE__, kEctNetMsgXP, item.second.first, longlink_channel->Profile().ip,  longlink_channel->Profile().port);
             __BatchErrorRespHandle(item.first, kEctNetMsgXP, item.second.first, kTaskFailHandleDefault, item.second.second);
-            xassert2(fun_notify_network_err_);
-            auto longlink_channel = GetLongLink(item.first)->Channel();
-            if(longlink_channel)
-                fun_notify_network_err_(item.first, __LINE__, kEctNetMsgXP, item.second.first, longlink_channel->Profile().ip,  longlink_channel->Profile().port);
         }
     }
 }
