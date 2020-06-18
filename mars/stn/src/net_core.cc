@@ -644,7 +644,9 @@ void NetCore::__ConnStatusCallBack() {
     int longlink_connstatus = kNetworkUnkown;
 #ifdef USE_LONG_LINK
     if(longlink_task_manager_->DefaultLongLink() == nullptr)    return;
-    longlink_connstatus = longlink_task_manager_->DefaultLongLink()->Channel()->ConnectStatus();
+    auto longlink = longlink_task_manager_->DefaultLongLink()->Channel();
+    if (!longlink) return;
+    longlink_connstatus = longlink->ConnectStatus();
     switch (longlink_connstatus) {
         case LongLink::kDisConnected:
             return;
