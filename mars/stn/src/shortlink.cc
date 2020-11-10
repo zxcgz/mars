@@ -349,7 +349,17 @@ SOCKET ShortLink::__RunConnect(ConnectProfile& _conn_profile) {
 
     __UpdateProfile(_conn_profile);
 
-    xinfo2(TSF"task socket connect success sock:%_, %_ host:%_, ip:%_, port:%_, local_ip:%_, local_port:%_, iptype:%_, net:%_", sock, message.String(), _conn_profile.host, _conn_profile.ip, _conn_profile.port, _conn_profile.local_ip, _conn_profile.local_port, IPSourceTypeString[_conn_profile.ip_type], _conn_profile.net_type);
+    std::string ip_type = "";
+    switch(_conn_profile.ip_type) {
+        case 0: ip_type = "NullIP"; break;
+        case 1: ip_type = "DebugIP"; break;
+        case 2: ip_type = "DNSIP"; break;
+        case 3: ip_type = "NewDNSIP"; break;
+        case 4: ip_type = "ProxyIP"; break;
+        case 5: ip_type = "BackupIP"; break;
+        default: ip_type = "NullIP";
+    }
+    xinfo2(TSF"task socket connect success sock:%_, %_ host:%_, ip:%_, port:%_, local_ip:%_, local_port:%_, iptype:%_, net:%_", sock, message.String(), _conn_profile.host, _conn_profile.ip, _conn_profile.port, _conn_profile.local_ip, _conn_profile.local_port, ip_type, _conn_profile.net_type);
 
 
 //    struct linger so_linger;

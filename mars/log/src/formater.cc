@@ -37,7 +37,7 @@
 #include <inttypes.h>
 #endif
 
-static char* reverse(char *str, int len) {
+char* reverse(char *str, int len) {
     char* p1 = str;
     char* p2 = str + len - 1;
 
@@ -50,7 +50,7 @@ static char* reverse(char *str, int len) {
     return str;
 }
 
-static int logger_itoa(int num, char* str, int len, int min) {
+int logger_itoa(int num, char* str, int len, int min) {
     if (NULL == str || len == 0) {
         return 0;
     }
