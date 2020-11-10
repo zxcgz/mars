@@ -135,25 +135,49 @@ void log_formater(const XLoggerInfo* _info, const char* _logbody, PtrBuffer& _lo
             snprintf(temp_time, sizeof(temp_time), "%d-%02d-%02d +%.3s %02d:%02d:%02d.%.3d", 1900 + tm.tm_year, 1 + tm.tm_mon, tm.tm_mday,
                      (-_timezone) / 3600.0, tm.tm_hour, tm.tm_min, tm.tm_sec, _info->timeval.tv_usec / 1000);
 #else
-            int len = 0;
-            len += logger_itoa(1900 + tm.tm_year, temp_time + len, 64 - len, 4);
-            temp_time[len++] = '-';
-            len += logger_itoa(1 + tm.tm_mon, temp_time + len, 64 - len, 2);
-            temp_time[len++] = '-';
-            len += logger_itoa(tm.tm_mday, temp_time + len, 64 - len, 2);
-            temp_time[len++] = ' ';
-            if (tm.tm_gmtoff > 0) {
-                temp_time[len++] = '+';
-            }
-            len += logger_itoa(tm.tm_gmtoff / 360, temp_time + len, 64 - len, 0);
-            temp_time[len++] = ' ';
-            len += logger_itoa(tm.tm_hour, temp_time + len, 64 - len, 2);
-            temp_time[len++] = ':';
-            len += logger_itoa(tm.tm_min, temp_time + len, 64 - len, 2);
-            temp_time[len++] = ':';
-            len += logger_itoa(tm.tm_sec, temp_time + len, 64 - len, 2);
-            temp_time[len++] = '.';
-            len += logger_itoa(_info->timeval.tv_usec / 1000, temp_time + len, 64 - len, 3);
+            do {
+                int len = 0;
+                int total_len = sizeof(temp_time);
+                len += logger_itoa(1900 + tm.tm_year, temp_time + len, total_len - len, 4);
+                if (len >= total_len - 1) {
+                    break;
+                }
+                temp_time[len++] = '-';
+                len += logger_itoa(1 + tm.tm_mon, temp_time + len, total_len - len, 2);
+                if (len >= total_len - 1) {
+                    break;
+                }
+                temp_time[len++] = '-';
+                len += logger_itoa(tm.tm_mday, temp_time + len, total_len - len, 2);
+                if (len >= total_len - 2) {
+                    break;
+                }
+                temp_time[len++] = ' ';
+                if (tm.tm_gmtoff > 0) {
+                    temp_time[len++] = '+';
+                }
+                len += logger_itoa(tm.tm_gmtoff / 360, temp_time + len, total_len - len, 0);
+                if (len >= total_len - 1) {
+                    break;
+                }
+                temp_time[len++] = ' ';
+                len += logger_itoa(tm.tm_hour, temp_time + len, total_len - len, 2);
+                if (len >= total_len - 1) {
+                    break;
+                }
+                temp_time[len++] = ':';
+                len += logger_itoa(tm.tm_min, temp_time + len, total_len - len, 2);
+                if (len >= total_len - 1) {
+                    break;
+                }
+                temp_time[len++] = ':';
+                len += logger_itoa(tm.tm_sec, temp_time + len, total_len - len, 2);
+                if (len >= total_len - 1) {
+                    break;
+                }
+                temp_time[len++] = '.';
+                len += logger_itoa(_info->timeval.tv_usec / 1000, temp_time + len, total_len - len, 3);
+            } while (false);
 #endif
         }
 
