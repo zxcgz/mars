@@ -125,7 +125,7 @@ void log_formater(const XLoggerInfo* _info, const char* _logbody, PtrBuffer& _lo
 
         if (0 != _info->timeval.tv_sec) {
             time_t sec = _info->timeval.tv_sec;
-            struct tm tm;
+            struct tm tm = {0};
             localtime_r((const time_t*)&sec, &tm);
             std::string gmt = std::to_string(tm.tm_gmtoff / 360);
             
@@ -216,13 +216,13 @@ void log_formater(const XLoggerInfo* _info, const char* _logbody, PtrBuffer& _lo
         memcpy((char*)_log.PosPtr() + len, "][", 2);
         len += 2;
 
-        size_t filename_len = strlen(filename);
+        size_t filename_len = strnlen(filename, 100);
         memcpy((char*)_log.PosPtr() + len, filename, filename_len);
         len += filename_len; 
         memcpy((char*)_log.PosPtr() + len, ", ", 2);
         len += 2; 
 
-        size_t funname_len = strlen(strFuncName);
+        size_t funname_len = strnlen(strFuncName, 100);
         memcpy((char*)_log.PosPtr() + len, strFuncName, funname_len);
         len += funname_len; 
         memcpy((char*)_log.PosPtr() + len, ", ", 2);
