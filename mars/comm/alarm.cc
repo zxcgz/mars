@@ -40,7 +40,9 @@ bool Alarm::Start(int _after, bool _needWake) {
     if (INVAILD_SEQ != seq_) return false;
 
     if (INVAILD_SEQ == sg_seq) sg_seq = 1;
+#ifdef ANDROID
     xinfo2(TSF"alarm sg_seq is %_", sg_seq);
+#endif
 
     int64_t seq = sg_seq++;
     uint64_t starttime = gettickcount();
@@ -67,7 +69,9 @@ bool Alarm::Start(int _after, bool _needWake) {
     endtime_ = 0;
     after_ = _after;
     seq_ = seq;
+#ifdef ANDROID
     xinfo2(TSF"alarm id:%_, after:%_, seq:%_, po.reg.q:%_,po.reg.s:%_,po.s:%_, MQ:%_", (uintptr_t)this, _after, seq, broadcast_msg_id_.reg.queue, broadcast_msg_id_.reg.seq, broadcast_msg_id_.seq, MessageQueue::GetDefMessageQueue());
+#endif
 
     return true;
 }
