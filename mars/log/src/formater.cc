@@ -80,7 +80,7 @@ int logger_itoa(int num, char* str, int len, int min) {
 }
 
 void log_formater(const XLoggerInfo* _info, const char* _logbody, PtrBuffer& _log) {
-    static const char* levelStrings[] = {
+    const char* levelStrings[] = {
         "V",
         "D",  // debug
         "I",  // info
@@ -91,8 +91,8 @@ void log_formater(const XLoggerInfo* _info, const char* _logbody, PtrBuffer& _lo
 
     assert((unsigned int)_log.Pos() == _log.Length());
 
-    static int error_count = 0;
-    static int error_size = 0;
+    int error_count = 0;
+    int error_size = 0;
 
     if (_log.MaxLength() <= _log.Length() + 5 * 1024) {  // allowed len(_log) <= 11K(16K - 5K)
         ++error_count;
