@@ -475,29 +475,17 @@ System.loadLibrary("marsxlog");
 
 final String SDCARD = Environment.getExternalStorageDirectory().getAbsolutePath();
 final String logPath = SDCARD + "/marssample/log";
-
-// this is necessary, or may crash for SIGBUS
-final String cachePath = this.getFilesDir() + "/xlog"
-
-//init xlog
-Xlog.XLogConfig logConfig = new Xlog.XLogConfig();
-logConfig.mode = Xlog.AppednerModeAsync;
-logConfig.logdir = logPath;
-logConfig.nameprefix = logFileName;
-logConfig.pubkey = "";
-logConfig.compressmode = Xlog.ZLIB_MODE;
-logConfig.compresslevel = 0;
-logConfig.cachedir = "";
-logConfig.cachedays = 0;
+final String cachePath = this.getFilesDir() + "/xlog";
+Xlog xlog = new Xlog();
+String pubkey = "ba75b027923d0106ccc7799f36d937f344e247bf5e12ad424c03dfd12451d8405fa18893c61a7354f37841361fc1b238f5b7fd18c82cd6b7668ed5c59cca9cc4" ;
+Log.setLogImp(xlog) ;
 if (BuildConfig.DEBUG) {
-    logConfig.level = Xlog.LEVEL_VERBOSE;
-    Xlog.setConsoleLogOpen(true);
+	Log.setConsoleLogOpen(true);
+	Xlog.open(false,Xlog.LEVEL_ALL, Xlog.AppednerModeAsync, "", logPath, "logFileName", pubkey);
 } else {
-    logConfig.level = Xlog.LEVEL_INFO;
-    Xlog.setConsoleLogOpen(false);
+	Log.setConsoleLogOpen(false);
+	Xlog.open(false,Xlog.LEVEL_ALL, Xlog.AppednerModeAsync, "", logPath, "logFileName", pubkey);
 }
-
-Log.setLogImp(new Xlog());
 ```
 
 程序退出时关闭日志：
